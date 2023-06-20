@@ -37,13 +37,16 @@ pub fn register(config: &mut web::ServiceConfig) {
         );
 }
 
-#[actix_rt::main]
+#[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let address = ("127.0.0.1", 8080);
 
     println!("Server running on http://{}:{}", address.0, address.1);
-    HttpServer::new(move || actix_web::App::new().configure(register))
-        .bind(address)?
-        .run()
-        .await
+    HttpServer::new(move || {
+        actix_web::App::new()
+            .configure(register)
+    })
+    .bind(address)?
+    .run()
+    .await
 }
