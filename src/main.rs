@@ -7,7 +7,7 @@ use actix_web::{
 };
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
 use async_graphql_actix_web::{GraphQLRequest, GraphQLResponse};
-use schema::{ProjectSchema, create_schema};
+use schema::{create_schema, ProjectSchema};
 
 mod schema;
 
@@ -29,13 +29,9 @@ pub fn register(config: &mut web::ServiceConfig) {
     let schema = Arc::new(create_schema());
     config
         .app_data(Data::new(schema))
+        .service(web::resource("/").guard(guard::Post()).to(graphql_handler))
         .service(
-            web::resource("/graphql")
-                .guard(guard::Post())
-                .to(graphql_handler),
-        )
-        .service(
-            web::resource("/graphiql")
+            web::resource("/")
                 .guard(guard::Get())
                 .to(graphql_playground),
         );
