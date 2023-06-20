@@ -1,24 +1,23 @@
-use juniper::{EmptyMutation, EmptySubscription, FieldResult, RootNode};
+use async_graphql::{EmptyMutation, EmptySubscription, FieldResult, Object, Schema, SimpleObject};
 
-#[derive(juniper::GraphQLObject)]
-#[graphql(description = "Test object")]
-struct Test {
+#[derive(SimpleObject)]
+pub struct Test {
     id: String,
 }
 
-pub struct QueryRoot;
-
-#[juniper::graphql_object]
-impl QueryRoot {
-    #[graphql(description = "Test query")]
-    fn test() -> FieldResult<Test> {
-        Ok(Test {
-            id: "test".to_owned(),
-        })
+pub struct Query;
+#[Object(extends)]
+impl Query {
+    async fn test(&self) -> FieldResult<Test> {
+        let test = Test {
+            id: "test".to_string(),
+        };
+        Ok(test)
     }
 }
-pub type Schema = RootNode<'static, QueryRoot, EmptyMutation<()>, EmptySubscription<()>>;
 
-pub fn create_schema() -> Schema {
-    Schema::new(QueryRoot {}, EmptyMutation::new(), EmptySubscription::new())
+pub type ProjectSchema = Schema<Query, EmptyMutation, EmptySubscription>;
+
+pub fn create_schema() -> ProjectSchema {
+    Schema::build(Query, EmptyMutation, EmptySubscription).finish()
 }
