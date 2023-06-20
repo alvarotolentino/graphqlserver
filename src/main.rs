@@ -6,7 +6,6 @@ use crate::schema::{create_schema, Schema};
 
 mod schema;
 
-
 async fn graphiql() -> HttpResponse {
     let html = graphiql_source("/graphql", Some("http://127.0.0.1:8080/graphql"));
     HttpResponse::Ok()
@@ -40,15 +39,10 @@ pub fn register(config: &mut web::ServiceConfig) {
 
 #[ntex::main]
 async fn main() -> std::io::Result<()> {
-    let _logical_cpus = num_cpus::get();
-    let _physical_cpus = num_cpus::get_physical();
     let address = "127.0.0.1:8080";
     println!("Running at {address}");
-    let schema = Arc::new(create_schema());
-
     web::server(move || {
         App::new()
-            .state(schema.clone())
             .wrap(middleware::Logger::default())
             .configure(register)
     })
