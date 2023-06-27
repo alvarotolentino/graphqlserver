@@ -17,4 +17,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build
-      run: RUSTFLAGS="-C target-cpu=native" cargo build --release --verbose
+      run: RUSTFLAGS="-C target-cpu=native" cargo build --release
