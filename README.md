@@ -26,8 +26,7 @@ The command above performs 10000000 request(s) using 100 connection(s)
 * -c number of conect
 * -n number of requests
 
-Using :herb: master (use ntex as web framework) here the results:
-
+Using :herb: __master__ (use ntex as web framework) here the results:
 
 |Statistics|Avg|Stdev|Max|
 |---|---|---|---|
@@ -56,7 +55,7 @@ Using :herb: master (use ntex as web framework) here the results:
 |41.72MB/s|
 
 
-Using :herb: masterasync-graphql (use async-graphql and actix-web as web framework) here the results:
+Using :herb: __async-graphql__ (use async-graphql and actix-web as web framework) here the results:
 
 |Statistics|Avg|Stdev|Max|
 |---|---|---|---|
@@ -83,3 +82,81 @@ Using :herb: masterasync-graphql (use async-graphql and actix-web as web framewo
 |Throughput|
 |--|
 |50.96MB/s|
+
+
+After the following optimizations in the cargo.toml file:
+
+```
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
+```
+the command to build is:
+
+```
+RUSTFLAGS="-C target-cpu=native" cargo build --release
+```
+
+using :herb: __master__, here the results:
+
+|Statistics|Avg|Stdev|Max|
+|---|---|---|---|
+|Reqs/sec |143285.95 | 9002.55  |157950.36|
+|Latency  | 683.83us |132.96us  |  18.81ms|
+
+
+|Latency| Distribution|
+|---|---|
+|50%| 523.00us|
+|75%|   0.87ms|
+|90%|   1.35ms|
+|95%|   1.77ms|
+|99%|   2.91ms|
+
+|HTTP codes|
+|--|
+|1xx - 0|
+|2xx - 10000000|
+|3xx - 0|
+|4xx - 0|
+|5xx - 0|
+|others - 0|
+
+|Throughput|
+|--|
+|43.58MB/s|
+
+
+using :herb: __async-graphql__, here the results:
+
+|Statistics|Avg|Stdev|Max|
+|---|---|---|---|
+|Reqs/sec |201282.43   | 5372.76  |212429.82|
+|Latency  | 491.16us   |277.21us  |  31.39ms|
+
+|Latency| Distribution|
+|---|---|
+|50% |415.00us|
+|75% |530.00us|
+|90% |742.00us|
+|95% |  0.95ms|
+|99% |  1.86ms|
+
+|HTTP codes|
+|--|
+|1xx - 0|
+|2xx - 10000000|
+|3xx - 0|
+|4xx - 0|
+|5xx - 0|
+|others - 0|
+
+|Throughput|
+|--|
+|59.90MB/s|
+
+
+![requests per second](request_sec.png)
+![latency](latency.png)
